@@ -1,0 +1,21 @@
+{
+  "name": "event-server",
+  "version": "1.0.0",
+  "description": "Serve node EventEmitter events over networks.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fantasyui-com/event-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fantasyui-com/event-server/issues"
+  },
+  "homepage": "https://github.com/fantasyui-com/event-server#readme"
+}

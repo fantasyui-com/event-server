@@ -3,8 +3,13 @@
   "version": "1.1.0",
   "description": "Serve node EventEmitter events over networks.",
   "main": "server.js",
+  "bin": {
+    "event-server": "cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cli.js serve -r Universe",
+    "client": "cli.js connect -u Admin",
     "start": "node server.js"
   },
   "repository": {
@@ -17,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/fantasyui-com/event-server/issues"
   },
-  "homepage": "https://github.com/fantasyui-com/event-server#readme"
+  "homepage": "https://github.com/fantasyui-com/event-server#readme",
+  "dependencies": {
+    "commander": "^2.15.0"
+  }
 }

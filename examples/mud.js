@@ -11,14 +11,17 @@
   class Location extends EventEmitter {}
 
   const home = new Location();
-  home.on('examine', (callback) => {
-    callback(null, `You are home, there is a lobby here.`);
+  home.on('examine', ({cmd, log}) => {
+    log(`You are home, there is a lobby here.`);
 
   });
   const lobby = new Location();
-  lobby.on('examine', (callback) => {
+  lobby.on('examine', ({cmd, log}) => {
     console.log('aaa;');
-    callback(null, `You are in the lobby, you can go home fro here.`);
+
+    setTimeout(function(){
+      log(`You are in the lobby, you can go home fro here.`);
+     }, 1000 );
   });
 
   world.locations = {home, lobby};
@@ -34,15 +37,15 @@
     }
   });
 
-  player.on('action', (cmd, callback) => {
-    console.log(`Emitting ${cmd} to player.location`)
-    player.location.emit(cmd, callback)
+  player.on('action', (o) => {
+    console.log(`Emitting ${o.cmd} to player.location`)
+    player.location.emit(o.cmd, o)
   });
 
   player.emit('goto', 'lobby');
 
-module.exports = function(cmd, callback){
+module.exports = function(o){
 
-   player.emit('action', cmd, callback);
+   player.emit('action', o);
 
 }

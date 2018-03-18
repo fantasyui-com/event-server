@@ -7,29 +7,41 @@ let connections = 0;
 
 module.exports = function({events, realm, address, port}){
 
-  function myEval(cmd, context, filename, callback) {
-    events(cmd.trim(), callback);
-  }
+
 
 
 const server = net.createServer((socket) => {
+  let context = {};
+  let replServer = {};
+
+    function myEval(cmd, contextxxx, filename, callback) {
+      events( {cmd: cmd.trim(),
+        log: function(a){
+          socket.write(a+`\n`);
+          replServer.displayPrompt();
+        },
+       } );
+      callback(null,''); // Immediate return.
+    }
 
     connections += 1;
 
-    repl.start({
-      prompt: realm+'> ',
+    replServer = repl.start({
+       prompt: realm+'> ',
       input: socket,
       output: socket,
       terminal: true,
+      eval: myEval,
+      writer: function(a){return a},
 
-      eval: myEval
     });
 
     if(repl.on) repl.on('exit', () => {
       socket.end();
     });
 
-    // repl.context.socket = socket
+    if(!repl.context) repl.context = context;
+    repl.context.socket = socket
 
 
   });

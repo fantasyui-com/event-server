@@ -4,9 +4,17 @@
 
 
   const EventEmitter = require('events');
+  const XRegExp = require('xregexp');
+
+  const types = {};
 
   class World extends EventEmitter {}
   const world = new World();
+
+
+    class Self extends EventEmitter {}
+    const self = new Self();
+
 
   class Location extends EventEmitter {}
 
@@ -24,28 +32,57 @@
      }, 1000 );
   });
 
-  world.locations = {home, lobby};
 
-  class Player extends EventEmitter {}
-  const player = new Player();
+  // GOTO
+  lobby.on('goto-location', ({log, location}) => {
+    player.emit('goto', location);
+  });
 
-  player.on('goto', (locationId) => {
-    console.log(`entering ${locationId}`);
-    if(world.locations[locationId]) {
-      player.location = world.locations[locationId];
-      console.log(`location changed to ${locationId}\n`)
+  const fork = {name: 'Cheap Fork'}
+  const universe = {
+
+      location: lobby,
+      self,
+      inventory: {fork},
+
+      home: {lobby},
+      lobby: {home},
+
+  };
+
+  self.on('examine-inventory', ({log}) => {
+    log(Object.keys(universe.player.inventory));
+  });
+
+  self.on('goto-location', ({log, location}) => {
+    if(universe.locations[location]) {
+      log(`Entering ${location}.`);
+      universe.player.location = universe.locations[location];
     }
   });
 
-  player.on('action', (o) => {
-    console.log(`Emitting ${o.cmd} to player.location`)
-    player.location.emit(o.cmd, o)
-  });
 
-  player.emit('goto', 'lobby');
+
 
 module.exports = function(o){
 
-   player.emit('action', o);
+   const registered = [];
+
+   registered.push({ category:'self',      event:'examine-self', pattern:`^(self|s)$` });
+   registered.push({ category:'inventory', event:'examine-inventory', pattern:`^(inventory|i)$` });
+   registered.push({ category:'location',  event:'goto-location', pattern:`^(goto|g) (?<location>[a-zA-Z0-9 ]+)$` });
+   registered.push({ category:'location',  event:'examine', pattern:`^(examine|x)$` });
+
+   registered.forEach(matcher=>{
+
+     const match = XRegExp.exec(o.cmd, XRegExp(matcher.pattern) );
+
+     if(match) {
+       console.log(`${o.cmd} was matched by ${matcher.event}`);
+       universe[matcher.category].emit(matcher.event, Object.assign({}, o, match) );
+     }
+   });
+
+   //
 
 }

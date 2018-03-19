@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/fantasyui-com/event-server#readme",
   "dependencies": {
-    "commander": "^2.15.0"
+    "commander": "^2.15.0",
+    "xregexp": "^4.1.1"
   }
 }

@@ -39,12 +39,14 @@
   });
 
   const fork = {name: 'Cheap Fork'}
+
   const universe = {
 
       location: lobby,
       self,
       inventory: {fork},
 
+      locations:{
       home: {lobby},
       lobby: {home},
 
@@ -55,9 +57,9 @@
   });
 
   self.on('goto-location', ({log, location}) => {
-    if(universe.locations[location]) {
+    if(universe[location]) {
       log(`Entering ${location}.`);
-      universe.player.location = universe.locations[location];
+      universe.player.location = universe[location];
     }
   });
 
@@ -66,23 +68,19 @@
 
 module.exports = function(o){
 
-   const registered = [];
+   const rules = [];
 
-   registered.push({ category:'self',      event:'examine-self', pattern:`^(self|s)$` });
-   registered.push({ category:'inventory', event:'examine-inventory', pattern:`^(inventory|i)$` });
-   registered.push({ category:'location',  event:'goto-location', pattern:`^(goto|g) (?<location>[a-zA-Z0-9 ]+)$` });
-   registered.push({ category:'location',  event:'examine', pattern:`^(examine|x)$` });
+   rules.push({ thing:'self',      event:'examine-self',      pattern:`^(self|s)$` });
+   rules.push({ thing:'inventory', event:'examine-inventory', pattern:`^(inventory|i)$` });
+   rules.push({ thing:'location',  event:'goto-location',     pattern:`^(goto|g) (?<location>[a-zA-Z0-9 ]+)$` });
+   rules.push({ thing:'location',  event:'examine',           pattern:`^(examine|x)$` });
 
-   registered.forEach(matcher=>{
-
-     const match = XRegExp.exec(o.cmd, XRegExp(matcher.pattern) );
-
-     if(match) {
-       console.log(`${o.cmd} was matched by ${matcher.event}`);
-       universe[matcher.category].emit(matcher.event, Object.assign({}, o, match) );
+   rules.forEach(rule=>{
+     const xRegExpMatch = XRegExp.exec(o.cmd, XRegExp(rule.pattern) );
+     if(xRegExpMatch) {
+       console.log(`${o.cmd} was matched by ${rule.event}`);
+       universe[rule.thing].emit(rule.event, Object.assign({}, o, xRegExpMatch) );
      }
-   });
-
-   //
+   }); // for each rule
 
 }

@@ -15,13 +15,15 @@ const server = net.createServer((socket) => {
   let replServer = {};
 
     function myEval(cmd, contextxxx, filename, callback) {
+      callback(null,''); // Immediate return.
+
       events( {cmd: cmd.trim(),
         log: function(a){
+          replServer.displayPrompt();
           socket.write(a+`\n`);
           replServer.displayPrompt();
         },
        } );
-      callback(null,''); // Immediate return.
     }
 
     connections += 1;

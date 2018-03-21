@@ -38,18 +38,17 @@
     player.emit('goto', location);
   });
 
-  const fork = {name: 'Cheap Fork'}
+  const fork = {name: 'Cheap Fork'};
 
-  const universe = {
+  const locations = {
+    home: {lobby},
+    lobby: {home},
+  };
 
-      location: lobby,
-      self,
-      inventory: {fork},
-
-      locations:{
-      home: {lobby},
-      lobby: {home},
-
+  const things = {
+    location: lobby,
+    self,
+    inventory: {fork},
   };
 
   self.on('examine-inventory', ({log}) => {
@@ -68,6 +67,17 @@
 
 module.exports = function(o){
 
+
+  function getMatches(string, regex, index) {
+    index || (index = 1); // default to the first capturing group
+    var matches = [];
+    var match;
+    while (match = regex.exec(string)) {
+      matches.push(match[index]);
+    }
+    return matches;
+  }
+
    const rules = [];
 
    rules.push({ thing:'self',      event:'examine-self',      pattern:`^(self|s)$` });
@@ -76,11 +86,19 @@ module.exports = function(o){
    rules.push({ thing:'location',  event:'examine',           pattern:`^(examine|x)$` });
 
    rules.forEach(rule=>{
+
      const xRegExpMatch = XRegExp.exec(o.cmd, XRegExp(rule.pattern) );
+     const xRegExpVariables = getMatches(rule.pattern, \?\((\<[a-z]+\>)/g, 1);
+     const oo = {};
+     xRegExpVariables.forEach(function(name){
+       oo[name] = xRegExpVariables[name];
+     });
+
      if(xRegExpMatch) {
-       console.log(`${o.cmd} was matched by ${rule.event}`);
-       universe[rule.thing].emit(rule.event, Object.assign({}, o, xRegExpMatch) );
+       // Emit rule's event into the "thing".
+       universe[rule.thing].emit(rule.event, Object.assign({}, o, oo) );
      }
+
    }); // for each rule
 
 }

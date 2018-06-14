@@ -25,7 +25,6 @@ process.stdin.on('end', function () {
 socket.pipe(process.stdout);
 
 socket.on('connect', function () {
-  //console.log('Connected.');
   console.log(`Connected as ${user} to ${address}:${port}`);
   process.stdin.setRawMode(true);
 });

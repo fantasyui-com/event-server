@@ -10,14 +10,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cli.js serve -r Universe",
     "client": "cli.js connect -u Admin",
-    "start": "node server.js"
+    "start": "node server.js",
+    "save": "git add .; git commit -m 'New Release'; git push; npm version patch; npm publish; git push;"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fantasyui-com/event-server.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "fantasyui.com <fantasyui.com@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/fantasyui-com/event-server/issues"

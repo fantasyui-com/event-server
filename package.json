@@ -1,6 +1,6 @@
 {
   "name": "event-server",
-  "version": "1.36.0",
+  "version": "1.37.0",
   "description": "Serve node EventEmitter events over networks.",
   "main": "server.js",
   "bin": {
